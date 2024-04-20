@@ -12,18 +12,30 @@ interface TokenResponse {
 }
 
 const BASEURL = process.env.BASE_URL;
+const protectedRoutes = ['/dashboard']
+const publicRoutes = ['/auth/login', '/auth/signup', '/']
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
+
+  const path = request.nextUrl.pathname;
+  const isProtected = protectedRoutes.includes(path);
+  const isPublic = publicRoutes.includes(path);
+
+  if(request.nextUrl.pathname === '/'){
+    return NextResponse.redirect(new URL('auth/login', BASEURL));
+  }
+
   if (request.nextUrl.pathname.startsWith("/_next")) {
     return NextResponse.next();
   }
 
   const cookie = cookies().get('token');
 
-  if (!cookie && request.nextUrl.pathname !== '/auth/login') {
+  if (isProtected && !cookie) {
     return NextResponse.redirect(new URL('auth/login', BASEURL));
   }
+
 
   if (cookie) {
     const token = cookie.value;
@@ -49,5 +61,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!auth/signup).*)'],
-}  
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+}
