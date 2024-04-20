@@ -26,9 +26,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('auth/login', BASEURL));
   }
 
-  if (request.nextUrl.pathname.startsWith("/_next")) {
-    return NextResponse.next();
-  }
+  // if (request.nextUrl.pathname.startsWith("/_next")) {
+  //   return NextResponse.next();
+  // }
 
   const cookie = cookies().get('token');
 
