@@ -22,9 +22,6 @@ export async function middleware(request: NextRequest) {
   const isProtected = protectedRoutes.includes(path);
   const isPublic = publicRoutes.includes(path);
 
-  console.log(request.nextUrl.origin)
-  console.log(request.nextUrl.host);
-  console.log(request.nextUrl.hostname);
 
   if(request.nextUrl.pathname === '/'){
     return NextResponse.redirect(new URL('auth/login', request.nextUrl.origin));

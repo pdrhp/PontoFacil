@@ -1,6 +1,7 @@
-import axios from "xior";
+import xior from "xior";
 
-export const api = axios.create({
-    baseURL: `${process.env.API_URL}${process.env.PATH_API}`,
+
+export const api = xior.create({
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
 })
 
