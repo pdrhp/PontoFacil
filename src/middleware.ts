@@ -22,9 +22,11 @@ export async function middleware(request: NextRequest) {
   const isProtected = protectedRoutes.includes(path);
   const isPublic = publicRoutes.includes(path);
 
+  console.log('path: ', path);
+  console.log('origin:', request.nextUrl.origin);
 
   if(request.nextUrl.pathname === '/'){
-    return NextResponse.redirect(new URL('auth/login', request.nextUrl.origin));
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
   }
 
   // if (request.nextUrl.pathname.startsWith("/_next")) {
@@ -34,7 +36,8 @@ export async function middleware(request: NextRequest) {
   const cookie = cookies().get('token');
 
   if (isProtected && !cookie) {
-    return NextResponse.redirect(new URL('auth/login', request.nextUrl.origin));
+    console.log(1);
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
   }
 
 
@@ -44,23 +47,32 @@ export async function middleware(request: NextRequest) {
     try {
       const response: TokenResponse = await ValidateToken(token);
       if (response.validToken === false) {
+        console.log(2);
         throw new Error('Invalid token');
       }
 
       if (response.validToken === true) {
+        console.log(3);
         if (request.nextUrl.pathname === '/auth/login'
           || request.nextUrl.pathname === '/') {
-          return NextResponse.redirect(new URL('dashboard', request.nextUrl.origin));
+            console.log(4);
+          return NextResponse.redirect(new URL('pontofacil/dashboard', request.nextUrl.origin));
         }
       }
     }
     catch (e) {
-      return NextResponse.redirect(new URL('auth/login', request.url));
+      console.log('5');
+      const response = NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
+      response.cookies.delete('token');
+      return response;
     }
   }
 
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)',
+    { source: '/' }
+  ]
+  
 }
