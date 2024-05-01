@@ -32,7 +32,7 @@ const LoginForm = () => {
     })
 
     if(isSuccess){
-        router.push("/dashboard");
+        router.push("/dashboard")
     }
 
     function onSubmit(data: formType) {
