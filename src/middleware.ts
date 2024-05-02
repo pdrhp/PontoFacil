@@ -26,10 +26,12 @@ export async function middleware(request: NextRequest) {
   console.log('origin:', request.url);
   console.log('basepath', request.nextUrl.basePath);
   console.log('idk', request.nextUrl.host)
+  console.log('2', request.nextUrl.href)
+  console.log('3', request.nextUrl.origin);
 
 
   if(request.nextUrl.pathname === '/'){
-    return NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
   }
 
   // if (request.nextUrl.pathname.startsWith("/_next")) {
@@ -40,7 +42,7 @@ export async function middleware(request: NextRequest) {
 
   if (isProtected && !cookie) {
     console.log(1);
-    return NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
   }
 
 
@@ -59,13 +61,13 @@ export async function middleware(request: NextRequest) {
         if (request.nextUrl.pathname === '/auth/login'
           || request.nextUrl.pathname === '/') {
             console.log(4);
-          return NextResponse.redirect(new URL('pontofacil/dashboard', request.url));
+          return NextResponse.redirect(new URL('pontofacil/dashboard', request.nextUrl.origin));
         }
       }
     }
     catch (e) {
       console.log('5');
-      const response = NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
+      const response = NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
       response.cookies.delete('token');
       return response;
     }
@@ -75,7 +77,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)',
-    { source: '/' }
+    { source: '/'}
   ]
   
 }
