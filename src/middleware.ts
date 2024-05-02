@@ -23,10 +23,13 @@ export async function middleware(request: NextRequest) {
   const isPublic = publicRoutes.includes(path);
 
   console.log('path: ', path);
-  console.log('origin:', request.nextUrl.origin);
+  console.log('origin:', request.url);
+  console.log('basepath', request.nextUrl.basePath);
+  console.log('idk', request.nextUrl.host)
+
 
   if(request.nextUrl.pathname === '/'){
-    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
   }
 
   // if (request.nextUrl.pathname.startsWith("/_next")) {
@@ -37,7 +40,7 @@ export async function middleware(request: NextRequest) {
 
   if (isProtected && !cookie) {
     console.log(1);
-    return NextResponse.redirect(new URL('pontofacil/auth/login', request.nextUrl.origin));
+    return NextResponse.redirect(new URL('pontofacil/auth/login', request.url));
   }
 
 
@@ -56,7 +59,7 @@ export async function middleware(request: NextRequest) {
         if (request.nextUrl.pathname === '/auth/login'
           || request.nextUrl.pathname === '/') {
             console.log(4);
-          return NextResponse.redirect(new URL('pontofacil/dashboard', request.nextUrl.origin));
+          return NextResponse.redirect(new URL('pontofacil/dashboard', request.url));
         }
       }
     }
